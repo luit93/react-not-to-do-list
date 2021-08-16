@@ -1,8 +1,18 @@
 import React from "react";
+import { useState } from "react";
 import { Table, Button } from "react-bootstrap";
+import { BadTaskList } from "../bad-tasks-list/BadTaskList";
 
-export const TaskList = ({ tasks }) => {
-  console.log(tasks, " from taskLists");
+export const TaskList = ({ tasks, markAsBadList }) => {
+  // console.log(tasks, " from taskLists");
+  // const [exitData, setExitData] = useState([]);
+
+  // const handleOnClick = (i) => {
+  //   console.log(tasks[i]);
+  //   const { name, value } = tasks[i];
+  //   setExitData({ ...exitData, [name]: value });
+  //   handleSubmit(exitData);
+  // };
   return (
     <div>
       <h2>Task List</h2>
@@ -20,7 +30,9 @@ export const TaskList = ({ tasks }) => {
               <td>{item.task}</td>
               <td>{item.hr}</td>
               <td>
-                <Button>Mark As Not To Do</Button>
+                <Button onClick={() => markAsBadList(i)} key={i} type="submit">
+                  Mark As Not To Do
+                </Button>
               </td>
             </tr>
           ))}

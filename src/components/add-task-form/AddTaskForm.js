@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Col, Row, Button, Form } from "react-bootstrap";
 import React from "react";
 const initialFormData = {
-  task: "",
-  hr: 0,
+  task: "Watching TV",
+  hr: 10,
 };
 export const AddTaskForm = ({ handleSubmit }) => {
   const [formData, setFormData] = useState(initialFormData);
@@ -28,6 +28,7 @@ export const AddTaskForm = ({ handleSubmit }) => {
           <Form.Control
             name="task"
             placeholder="Task"
+            value={formData.task}
             required
             onChange={handleOnChange}
           />
@@ -36,6 +37,7 @@ export const AddTaskForm = ({ handleSubmit }) => {
           <Form.Control
             name="hr"
             placeholder="Hours"
+            value={formData.hr}
             type="number"
             required
             onChange={handleOnChange}

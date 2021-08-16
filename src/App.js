@@ -4,14 +4,38 @@ import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
 import { Container, Col, Row, Alert } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
-function App() {
+const App = () => {
   const [tasks, setTasks] = useState([]);
+  const [badTasks, setBadTasks] = useState([]);
 
-  const totalHours = tasks.reduce((subTotal, item) => subTotal + +item.hr, 0);
+  const totalHours = tasks?.reduce((subTotal, item) => subTotal + +item.hr, 0);
 
   const handleOnSubmit = (data) => {
     setTasks([...tasks, data]);
   };
+  //mark task list to bad list
+  const markAsBadList = (i) => {
+    console.log(i);
+    //take selected item and put in bad list
+    const selectedItem = tasks[i];
+    setBadTasks([...badTasks, selectedItem]);
+    console.log(badTasks);
+    //remove selected task from task list with filter
+    const tempArg = tasks.filter((item, index) => index !== i);
+    setTasks(tempArg);
+    //remove selected task from task list with splice
+    // const tempArg = [...tasks]
+    // tempArg.splice(i,1)
+    // setTasks(tempArg);
+  };
+
+  const markToDo = (i) => {
+    const selectedItem = tasks[i];
+    setTasks([...tasks, selectedItem]);
+    const tempArg = badTasks.filter((item, index) => index !== i);
+    setBadTasks(tempArg);
+  };
+
   return (
     <div>
       <Container fluid className="text-center">
@@ -25,10 +49,14 @@ function App() {
         <hr />
         <Row>
           <Col md="6">
-            <TaskList tasks={tasks} />
+            <TaskList
+              badTasks={badTasks}
+              tasks={tasks}
+              markAsBadList={markAsBadList}
+            />
           </Col>
           <Col md="6">
-            <BadTaskList tasks={tasks} />
+            <BadTaskList badTasks={badTasks} markToDo={markToDo} />
           </Col>
         </Row>
         <Row>
@@ -41,6 +69,6 @@ function App() {
       </Container>
     </div>
   );
-}
+};
 
 export default App;
