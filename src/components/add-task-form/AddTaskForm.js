@@ -34,7 +34,7 @@ export const AddTaskForm = ({ handleSubmit }) => {
         </Col>
         <Col>
           <Form.Control
-            name="hour"
+            name="hr"
             placeholder="Hours"
             type="number"
             required
@@ -42,7 +42,7 @@ export const AddTaskForm = ({ handleSubmit }) => {
           />
         </Col>
         <Col>
-          <Button>Add Task</Button>
+          <Button type="submit">Add Task</Button>
         </Col>
       </Row>
     </Form>
