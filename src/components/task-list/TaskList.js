@@ -3,7 +3,12 @@ import { useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { BadTaskList } from "../bad-tasks-list/BadTaskList";
 
-export const TaskList = ({ tasks, markAsBadList, handleOnTaskClick }) => {
+export const TaskList = ({
+  tasks,
+  markAsBadList,
+  handleOnTaskClick,
+  indexToDeleteFromTask,
+}) => {
   // console.log(tasks, " from taskLists");
   // const [exitData, setExitData] = useState([]);
 
@@ -25,29 +30,25 @@ export const TaskList = ({ tasks, markAsBadList, handleOnTaskClick }) => {
           </tr>
         </thead>
         <tbody>
-          {tasks.length &&
-            tasks.map((item, i) => (
-              <tr key={i}>
-                <td>
-                  <input
-                    type="checkbox"
-                    defaultValue={i}
-                    onChange={handleOnTaskClick}
-                  />{" "}
-                  <label>{item.task}</label>
-                </td>
-                <td>{item.hr}</td>
-                <td>
-                  <Button
-                    onClick={() => markAsBadList(i)}
-                    key={i}
-                    type="submit"
-                  >
-                    Mark As Not To Do
-                  </Button>
-                </td>
-              </tr>
-            ))}
+          {tasks.map((item, i) => (
+            <tr key={i}>
+              <td>
+                <input
+                  type="checkbox"
+                  defaultValue={i}
+                  onChange={handleOnTaskClick}
+                  checked={indexToDeleteFromTask.includes(i)}
+                />{" "}
+                <label>{item.task}</label>
+              </td>
+              <td>{item.hr}</td>
+              <td>
+                <Button onClick={() => markAsBadList(i)} key={i} type="submit">
+                  Mark As Not To Do
+                </Button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </div>

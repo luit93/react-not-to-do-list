@@ -3,13 +3,15 @@ import { useState } from "react";
 import { AlertDisplay } from "./components/alert/AlertDisplay";
 import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
-import { Container, Col, Row, Alert } from "react-bootstrap";
+import { Container, Col, Row, Button } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [badTasks, setBadTasks] = useState([]);
   const [hrsError, setHrsError] = useState(false);
+  const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
+  const [indexToDeleteFromBadList, setIndexToDeleteFromBadList] = useState([]);
 
   const taskHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
   const badTaskHours = badTasks?.reduce(
@@ -49,7 +51,48 @@ const App = () => {
   };
 
   const handleOnTaskClick = (e) => {
-    console.log(e);
+    const { checked, value } = e.target;
+    if (checked) {
+      //add the index in the array
+      setIndexToDeleteFromTask([...indexToDeleteFromTask, +value]);
+    } else {
+      //remove index from array
+      const tempArg = indexToDeleteFromTask.filter((item) => item !== +value);
+      setIndexToDeleteFromTask(tempArg);
+    }
+  };
+  const handleOnBadTaskClick = (e) => {
+    const { checked, value } = e.target;
+    if (checked) {
+      //add the index in the array
+      setIndexToDeleteFromBadList([...indexToDeleteFromBadList, +value]);
+    } else {
+      //remove index from array
+      const tempArg = indexToDeleteFromBadList.filter(
+        (item) => item !== +value
+      );
+      setIndexToDeleteFromBadList(tempArg);
+    }
+  };
+  const deleteFromBadTaskList = () => {
+    const tempBadArg = badTasks.filter(
+      (item, i) => !indexToDeleteFromBadList.includes(i)
+    );
+    console.log(tempBadArg);
+    setBadTasks(tempBadArg);
+    setIndexToDeleteFromBadList([]);
+  };
+  const deleteFromTask = () => {
+    const tempArg = tasks.filter(
+      (item, i) => !indexToDeleteFromTask.includes(i)
+    );
+    console.log(tempArg);
+    setTasks(tempArg);
+    setIndexToDeleteFromTask([]);
+  };
+  const deleteOnClick = () => {
+    deleteFromTask();
+    deleteFromBadTaskList();
   };
   return (
     <div>
@@ -78,6 +121,7 @@ const App = () => {
               tasks={tasks}
               markAsBadList={markAsBadList}
               handleOnTaskClick={handleOnTaskClick}
+              indexToDeleteFromTask={indexToDeleteFromTask}
             />
           </Col>
           <Col md="6">
@@ -85,7 +129,20 @@ const App = () => {
               badTasks={badTasks}
               markToDo={markToDo}
               badTaskHours={badTaskHours}
+              handleOnBadTaskClick={handleOnBadTaskClick}
+              indexToDeleteFromBadList={indexToDeleteFromBadList}
             />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              onClick={deleteOnClick}
+              variant="danger"
+              className="btn-block"
+            >
+              Delete
+            </Button>
           </Col>
         </Row>
         <Row>

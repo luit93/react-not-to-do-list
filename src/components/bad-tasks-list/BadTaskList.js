@@ -4,7 +4,13 @@ import { TaskList } from "../task-list/TaskList";
 import { Table, Button, Alert } from "react-bootstrap";
 import { AlertDisplay } from "../alert/AlertDisplay";
 
-export const BadTaskList = ({ badTasks, markToDo, badTaskHours }) => {
+export const BadTaskList = ({
+  badTasks,
+  markToDo,
+  badTaskHours,
+  handleOnBadTaskClick,
+  indexToDeleteFromBadList,
+}) => {
   //   console.log(badTasks, " from badTaskLists");
   return (
     <div>
@@ -18,18 +24,25 @@ export const BadTaskList = ({ badTasks, markToDo, badTaskHours }) => {
           </tr>
         </thead>
         <tbody>
-          {badTasks.length &&
-            badTasks.map((item, i) => (
-              <tr key={i}>
-                <td>{item.task}</td>
-                <td>{item.hr}</td>
-                <td>
-                  <Button onClick={() => markToDo(i)} type="submit">
-                    Mark As To Do
-                  </Button>
-                </td>
-              </tr>
-            ))}
+          {badTasks.map((item, i) => (
+            <tr key={i}>
+              <td>
+                <input
+                  type="checkbox"
+                  defaultValue={i}
+                  onChange={handleOnBadTaskClick}
+                  checked={indexToDeleteFromBadList.includes(i)}
+                />{" "}
+                <label>{item.task}</label>
+              </td>
+              <td>{item.hr}</td>
+              <td>
+                <Button onClick={() => markToDo(i)} type="submit">
+                  Mark As To Do
+                </Button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
       <AlertDisplay
