@@ -1,17 +1,29 @@
 import "./App.css";
 import { useState } from "react";
+import { AlertDisplay } from "./components/alert/AlertDisplay";
 import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
 import { Container, Col, Row, Alert } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
+
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [badTasks, setBadTasks] = useState([]);
+  const [hrsError, setHrsError] = useState(false);
 
-  const totalHours = tasks?.reduce((subTotal, item) => subTotal + +item.hr, 0);
-
+  const taskHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
+  const badTaskHours = badTasks?.reduce(
+    (subTotal, item) => subTotal + +item?.hr,
+    0
+  );
+  const totalHours = taskHours + badTaskHours;
+  const ttlPwk = 168;
   const handleOnSubmit = (data) => {
     setTasks([...tasks, data]);
+    if (totalHours + +data.hr > ttlPwk) {
+      setHrsError(true);
+      return;
+    }
   };
   //mark task list to bad list
   const markAsBadList = (i) => {
@@ -30,21 +42,33 @@ const App = () => {
   };
 
   const markToDo = (i) => {
-    const selectedItem = tasks[i];
+    const selectedItem = badTasks[i];
     setTasks([...tasks, selectedItem]);
     const tempArg = badTasks.filter((item, index) => index !== i);
     setBadTasks(tempArg);
   };
 
+  const handleOnTaskClick = (e) => {
+    console.log(e);
+  };
   return (
     <div>
       <Container fluid className="text-center">
         <Row className="mt-5">
           <Col>
+            {" "}
             <h1>Not To Do Task List</h1>
           </Col>
         </Row>
         <hr />
+
+        {hrsError && (
+          <AlertDisplay
+            color="danger"
+            text={"You don't have enough hours left this week"}
+          />
+        )}
+
         <AddTaskForm handleSubmit={handleOnSubmit} />
         <hr />
         <Row>
@@ -53,17 +77,23 @@ const App = () => {
               badTasks={badTasks}
               tasks={tasks}
               markAsBadList={markAsBadList}
+              handleOnTaskClick={handleOnTaskClick}
             />
           </Col>
           <Col md="6">
-            <BadTaskList badTasks={badTasks} markToDo={markToDo} />
+            <BadTaskList
+              badTasks={badTasks}
+              markToDo={markToDo}
+              badTaskHours={badTaskHours}
+            />
           </Col>
         </Row>
         <Row>
           <Col>
-            <Alert variant="info">
-              Total hours allocated = {totalHours} hours/week
-            </Alert>
+            <AlertDisplay
+              color="info"
+              text={`Total hours allocated = ${totalHours} hours/week`}
+            />
           </Col>
         </Row>
       </Container>

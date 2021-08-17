@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { TaskList } from "../task-list/TaskList";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Alert } from "react-bootstrap";
+import { AlertDisplay } from "../alert/AlertDisplay";
 
-export const BadTaskList = ({ badTasks, markToDo }) => {
+export const BadTaskList = ({ badTasks, markToDo, badTaskHours }) => {
   //   console.log(badTasks, " from badTaskLists");
   return (
     <div>
@@ -17,19 +18,24 @@ export const BadTaskList = ({ badTasks, markToDo }) => {
           </tr>
         </thead>
         <tbody>
-          {badTasks.map((item, i) => (
-            <tr key={i}>
-              <td>{item.task}</td>
-              <td>{item.hr}</td>
-              <td>
-                <Button onClick={() => markToDo(i)} type="submit">
-                  Mark As To Do
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {badTasks.length &&
+            badTasks.map((item, i) => (
+              <tr key={i}>
+                <td>{item.task}</td>
+                <td>{item.hr}</td>
+                <td>
+                  <Button onClick={() => markToDo(i)} type="submit">
+                    Mark As To Do
+                  </Button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
+      <AlertDisplay
+        color="danger"
+        text={`You could have saved ${badTaskHours} hrs/week`}
+      />
     </div>
   );
 };
