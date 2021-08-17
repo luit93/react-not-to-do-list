@@ -49,50 +49,91 @@ const App = () => {
     const tempArg = badTasks.filter((item, index) => index !== i);
     setBadTasks(tempArg);
   };
-
-  const handleOnTaskClick = (e) => {
-    const { checked, value } = e.target;
+  const itemToDelete = (checked, value, arg, setArg) => {
     if (checked) {
       //add the index in the array
-      setIndexToDeleteFromTask([...indexToDeleteFromTask, +value]);
+      setArg([...arg, +value]);
     } else {
       //remove index from array
-      const tempArg = indexToDeleteFromTask.filter((item) => item !== +value);
-      setIndexToDeleteFromTask(tempArg);
+      const tempArg = arg.filter((item) => item !== +value);
+      setArg(tempArg);
     }
+  };
+  const handleOnTaskClick = (e) => {
+    const { checked, value } = e.target;
+    itemToDelete(
+      checked,
+      value,
+      indexToDeleteFromTask,
+      setIndexToDeleteFromTask
+    );
+    // return;
+    // if (checked) {
+    //   //add the index in the array
+    //   setIndexToDeleteFromTask([...indexToDeleteFromTask, +value]);
+    // } else {
+    //   //remove index from array
+    //   const tempArg = indexToDeleteFromTask.filter((item) => item !== +value);
+    //   setIndexToDeleteFromTask(tempArg);
+    // }
   };
   const handleOnBadTaskClick = (e) => {
     const { checked, value } = e.target;
-    if (checked) {
-      //add the index in the array
-      setIndexToDeleteFromBadList([...indexToDeleteFromBadList, +value]);
-    } else {
-      //remove index from array
-      const tempArg = indexToDeleteFromBadList.filter(
-        (item) => item !== +value
-      );
-      setIndexToDeleteFromBadList(tempArg);
-    }
-  };
-  const deleteFromBadTaskList = () => {
-    const tempBadArg = badTasks.filter(
-      (item, i) => !indexToDeleteFromBadList.includes(i)
+    itemToDelete(
+      checked,
+      value,
+      indexToDeleteFromBadList,
+      setIndexToDeleteFromBadList
     );
-    console.log(tempBadArg);
-    setBadTasks(tempBadArg);
-    setIndexToDeleteFromBadList([]);
+    // if (checked) {
+    //   //add the index in the array
+    //   setIndexToDeleteFromBadList([...indexToDeleteFromBadList, +value]);
+    // } else {
+    //   //remove index from array
+    //   const tempArg = indexToDeleteFromBadList.filter(
+    //     (item) => item !== +value
+    //   );
+    //   setIndexToDeleteFromBadList(tempArg);
+    // }
   };
-  const deleteFromTask = () => {
-    const tempArg = tasks.filter(
-      (item, i) => !indexToDeleteFromTask.includes(i)
-    );
+
+  const deleteTask = (arg, setArg, argIndex, setArgIndex) => {
+    const tempArg = arg.filter((item, i) => !argIndex.includes(i));
     console.log(tempArg);
-    setTasks(tempArg);
-    setIndexToDeleteFromTask([]);
+    setArg(tempArg);
+    setArgIndex([]);
   };
+  // const deleteFromBadTaskList = () => {
+  //   const tempBadArg = badTasks.filter(
+  //     (item, i) => !indexToDeleteFromBadList.includes(i)
+  //   );
+  //   console.log(tempBadArg);
+  //   setBadTasks(tempBadArg);
+  //   setIndexToDeleteFromBadList([]);
+  // };
+  // const deleteFromTask = () => {
+  //   const tempArg = tasks.filter(
+  //     (item, i) => !indexToDeleteFromTask.includes(i)
+  //   );
+  //   console.log(tempArg);
+  //   setTasks(tempArg);
+  //   setIndexToDeleteFromTask([]);
+  // };
   const deleteOnClick = () => {
-    deleteFromTask();
-    deleteFromBadTaskList();
+    // deleteFromTask();
+    // deleteFromBadTaskList();
+    deleteTask(
+      tasks,
+      setTasks,
+      indexToDeleteFromTask,
+      setIndexToDeleteFromTask
+    );
+    deleteTask(
+      badTasks,
+      setBadTasks,
+      indexToDeleteFromBadList,
+      setIndexToDeleteFromBadList
+    );
   };
   return (
     <div>
