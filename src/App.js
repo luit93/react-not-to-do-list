@@ -1,10 +1,12 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AlertDisplay } from "./components/alert/AlertDisplay";
 import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
-import { Container, Col, Row, Button } from "react-bootstrap";
+import { Container, Col, Row, Button, Spinner } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
+import { postTask, fetchAllTasks } from "./apis/taskApi";
+import axios from "axios";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -12,6 +14,7 @@ const App = () => {
   const [hrsError, setHrsError] = useState(false);
   const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
   const [indexToDeleteFromBadList, setIndexToDeleteFromBadList] = useState([]);
+  const [isLoading, setIsLoading] = useState([false]);
 
   const taskHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
   const badTaskHours = badTasks?.reduce(
@@ -20,13 +23,29 @@ const App = () => {
   );
   const totalHours = taskHours + badTaskHours;
   const ttlPwk = 168;
-  const handleOnSubmit = (data) => {
-    setTasks([...tasks, data]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const loadTask = async () => {
+      const { result } = await fetchAllTasks();
+      setIsLoading(false);
+      setTasks(result);
+    };
+
+    loadTask();
+  }, []);
+
+  const handleOnSubmit = async (data) => {
     if (totalHours + +data.hr > ttlPwk) {
       setHrsError(true);
       return;
     }
+    setTasks([...tasks, data]);
+    //send data to the server
+    const result = await postTask(data);
+    console.log(result, "from Api");
   };
+
   //mark task list to bad list
   const markAsBadList = (i) => {
     console.log(i);
@@ -154,6 +173,7 @@ const App = () => {
         )}
 
         <AddTaskForm handleSubmit={handleOnSubmit} />
+        {isLoading && <Spinner variant="danger" animation="grow" />}
         <hr />
         <Row>
           <Col md="6">

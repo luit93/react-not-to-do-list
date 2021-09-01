@@ -46,7 +46,7 @@ export const BadTaskList = ({
         </tbody>
       </Table>
       <AlertDisplay
-        color="danger"
+        color="info"
         text={`You could have saved ${badTaskHours} hrs/week`}
       />
     </div>
