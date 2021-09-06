@@ -8,10 +8,10 @@ export const BadTaskList = ({
   badTasks,
   markToDo,
   badTaskHours,
-  handleOnBadTaskClick,
-  indexToDeleteFromBadList,
+  handleOnTaskBadClick,
+  indexToDeleteFromBadTask,
 }) => {
-  //   console.log(badTasks, " from badTaskLists");
+  console.log(badTasks, " from badTaskLists");
   return (
     <div>
       <h2>Bad Task List</h2>
@@ -29,15 +29,18 @@ export const BadTaskList = ({
               <td>
                 <input
                   type="checkbox"
-                  defaultValue={i}
-                  onChange={handleOnBadTaskClick}
-                  checked={indexToDeleteFromBadList.includes(i)}
+                  defaultValue={item._id}
+                  onChange={handleOnTaskBadClick}
+                  checked={indexToDeleteFromBadTask.includes(item._id)}
                 />{" "}
                 <label>{item.task}</label>
               </td>
               <td>{item.hr}</td>
               <td>
-                <Button onClick={() => markToDo(i)} type="submit">
+                <Button
+                  onClick={() => markToDo({ id: item._id, toDo: true })}
+                  type="submit"
+                >
                   Mark As To Do
                 </Button>
               </td>

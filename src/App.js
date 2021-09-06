@@ -5,7 +5,12 @@ import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
 import { Container, Col, Row, Button, Spinner } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
-import { postTask, fetchAllTasks } from "./apis/taskApi";
+import {
+  postTask,
+  fetchAllTasks,
+  deleteTasks,
+  updateTasks,
+} from "./apis/taskApi";
 import axios from "axios";
 
 const App = () => {
@@ -29,99 +34,70 @@ const App = () => {
     const loadTask = async () => {
       const { result } = await fetchAllTasks();
       setIsLoading(false);
-      setTasks(result);
+      result && setTasks(result);
     };
 
     loadTask();
   }, []);
-
+  // fetch t elatest data from server and set it in state
+  const fetchLatest = async () => {
+    const { result } = await fetchAllTasks();
+    result && setTasks(result);
+  };
   const handleOnSubmit = async (data) => {
     if (totalHours + +data.hr > ttlPwk) {
       setHrsError(true);
       return;
     }
-    setTasks([...tasks, data]);
     //send data to the server
     const result = await postTask(data);
     console.log(result, "from Api");
+    if (result?.status === "success") {
+      fetchLatest();
+    }
   };
 
   //mark task list to bad list
-  const markAsBadList = (i) => {
-    console.log(i);
+  const switchTask = async (obj) => {
     //take selected item and put in bad list
-    const selectedItem = tasks[i];
-    setBadTasks([...badTasks, selectedItem]);
-    console.log(badTasks);
-    //remove selected task from task list with filter
-    const tempArg = tasks.filter((item, index) => index !== i);
-    setTasks(tempArg);
-    //remove selected task from task list with splice
-    // const tempArg = [...tasks]
-    // tempArg.splice(i,1)
-    // setTasks(tempArg);
+    //call api to update th task
+    const result = await updateTasks(obj);
+    console.log(obj);
+    if (result?.status === "success") {
+      fetchLatest();
+    }
+    //re fetch all tasks
   };
 
-  const markToDo = (i) => {
-    const selectedItem = badTasks[i];
-    setTasks([...tasks, selectedItem]);
-    const tempArg = badTasks.filter((item, index) => index !== i);
-    setBadTasks(tempArg);
-  };
-  const itemToDelete = (checked, value, arg, setArg) => {
-    if (checked) {
-      //add the index in the array
-      setArg([...arg, +value]);
-    } else {
-      //remove index from array
-      const tempArg = arg.filter((item) => item !== +value);
-      setArg(tempArg);
-    }
-  };
+  // const itemToDelete = (checked, value, arg, setArg) => {
+  //   if (checked) {
+  //     //add the index in the array
+  //     setArg([...arg, value]);
+  //   } else {
+  //     //remove index from array
+  //     const tempArg = arg.filter((item) => item !== value);
+  //     setArg(tempArg);
+  //   }
+  // };
   const handleOnTaskClick = (e) => {
     const { checked, value } = e.target;
-    itemToDelete(
-      checked,
-      value,
-      indexToDeleteFromTask,
-      setIndexToDeleteFromTask
-    );
+    // itemToDelete(
+    //   checked,
+    //   value,
+    //   indexToDeleteFromTask,
+    //   setIndexToDeleteFromTask
+    // );
     // return;
-    // if (checked) {
-    //   //add the index in the array
-    //   setIndexToDeleteFromTask([...indexToDeleteFromTask, +value]);
-    // } else {
-    //   //remove index from array
-    //   const tempArg = indexToDeleteFromTask.filter((item) => item !== +value);
-    //   setIndexToDeleteFromTask(tempArg);
-    // }
-  };
-  const handleOnBadTaskClick = (e) => {
-    const { checked, value } = e.target;
-    itemToDelete(
-      checked,
-      value,
-      indexToDeleteFromBadList,
-      setIndexToDeleteFromBadList
-    );
-    // if (checked) {
-    //   //add the index in the array
-    //   setIndexToDeleteFromBadList([...indexToDeleteFromBadList, +value]);
-    // } else {
-    //   //remove index from array
-    //   const tempArg = indexToDeleteFromBadList.filter(
-    //     (item) => item !== +value
-    //   );
-    //   setIndexToDeleteFromBadList(tempArg);
-    // }
+    if (checked) {
+      //add the index in the array
+      setIndexToDeleteFromTask([...indexToDeleteFromTask, value]);
+    } else {
+      //remove index from array
+      const tempArg = indexToDeleteFromTask.filter((item) => item !== value);
+      setIndexToDeleteFromTask(tempArg);
+    }
   };
 
-  const deleteTask = (arg, setArg, argIndex, setArgIndex) => {
-    const tempArg = arg.filter((item, i) => !argIndex.includes(i));
-    console.log(tempArg);
-    setArg(tempArg);
-    setArgIndex([]);
-  };
   // const deleteFromBadTaskList = () => {
   //   const tempBadArg = badTasks.filter(
   //     (item, i) => !indexToDeleteFromBadList.includes(i)
@@ -138,22 +114,33 @@ const App = () => {
   //   setTasks(tempArg);
   //   setIndexToDeleteFromTask([]);
   // };
-  const deleteOnClick = () => {
+  const deleteOnClick = async () => {
+    //call api from server
+    const result = await deleteTasks(indexToDeleteFromTask);
+    if (result?.status === "success") {
+      fetchLatest();
+    }
     // deleteFromTask();
     // deleteFromBadTaskList();
-    deleteTask(
-      tasks,
-      setTasks,
-      indexToDeleteFromTask,
-      setIndexToDeleteFromTask
-    );
-    deleteTask(
-      badTasks,
-      setBadTasks,
-      indexToDeleteFromBadList,
-      setIndexToDeleteFromBadList
-    );
+    // deleteTask(
+    //   tasks,
+    //   setTasks,
+    //   indexToDeleteFromTask,
+    //   setIndexToDeleteFromTask
+    // );
+    // deleteTask(
+    //   badTasks,
+    //   setBadTasks,
+    //   indexToDeleteFromBadList,
+    //   setIndexToDeleteFromBadList
+    // );
   };
+  console.log(indexToDeleteFromTask);
+  //task list only
+  const taskListOnly = tasks.filter((item) => item.toDo);
+
+  //bad list only
+  const badListOnly = tasks.filter((item) => !item.toDo);
   return (
     <div>
       <Container fluid className="text-center">
@@ -179,19 +166,19 @@ const App = () => {
           <Col md="6">
             <TaskList
               badTasks={badTasks}
-              tasks={tasks}
-              markAsBadList={markAsBadList}
+              tasks={taskListOnly}
+              markAsBadList={switchTask}
               handleOnTaskClick={handleOnTaskClick}
               indexToDeleteFromTask={indexToDeleteFromTask}
             />
           </Col>
           <Col md="6">
             <BadTaskList
-              badTasks={badTasks}
-              markToDo={markToDo}
+              badTasks={badListOnly}
+              markToDo={switchTask}
               badTaskHours={badTaskHours}
-              handleOnBadTaskClick={handleOnBadTaskClick}
-              indexToDeleteFromBadList={indexToDeleteFromBadList}
+              handleOnTaskBadClick={handleOnTaskClick}
+              indexToDeleteFromBadTask={indexToDeleteFromTask}
             />
           </Col>
         </Row>

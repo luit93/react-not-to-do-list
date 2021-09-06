@@ -5,7 +5,7 @@ const rootUrl = "http://localhost:8000/api/v1/";
 export const postTask = async (newTask) => {
   try {
     const { data } = await axios.post(rootUrl, newTask);
-    return data.then();
+    return data;
   } catch (error) {
     console.log(error);
     return {
@@ -19,6 +19,31 @@ export const postTask = async (newTask) => {
 export const fetchAllTasks = async () => {
   try {
     const { data } = await axios.get(rootUrl);
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};
+//delete
+export const deleteTasks = async (ids) => {
+  try {
+    const { data } = await axios.delete(rootUrl, { data: ids });
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};
+
+//update tasks
+export const updateTasks = async (obj) => {
+  try {
+    const { data } = await axios.patch(rootUrl, obj);
     return data;
   } catch (error) {
     return {
