@@ -15,18 +15,12 @@ import axios from "axios";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
-  const [badTasks, setBadTasks] = useState([]);
   const [hrsError, setHrsError] = useState(false);
   const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
-  const [indexToDeleteFromBadList, setIndexToDeleteFromBadList] = useState([]);
   const [isLoading, setIsLoading] = useState([false]);
 
-  const taskHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
-  const badTaskHours = badTasks?.reduce(
-    (subTotal, item) => subTotal + +item?.hr,
-    0
-  );
-  const totalHours = taskHours + badTaskHours;
+  const totalHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
+
   const ttlPwk = 168;
 
   useEffect(() => {
@@ -62,32 +56,15 @@ const App = () => {
     //take selected item and put in bad list
     //call api to update th task
     const result = await updateTasks(obj);
-    console.log(obj);
     if (result?.status === "success") {
       fetchLatest();
     }
     //re fetch all tasks
   };
 
-  // const itemToDelete = (checked, value, arg, setArg) => {
-  //   if (checked) {
-  //     //add the index in the array
-  //     setArg([...arg, value]);
-  //   } else {
-  //     //remove index from array
-  //     const tempArg = arg.filter((item) => item !== value);
-  //     setArg(tempArg);
-  //   }
-  // };
   const handleOnTaskClick = (e) => {
     const { checked, value } = e.target;
-    // itemToDelete(
-    //   checked,
-    //   value,
-    //   indexToDeleteFromTask,
-    //   setIndexToDeleteFromTask
-    // );
-    // return;
+
     if (checked) {
       //add the index in the array
       setIndexToDeleteFromTask([...indexToDeleteFromTask, value]);
@@ -98,44 +75,13 @@ const App = () => {
     }
   };
 
-  // const deleteFromBadTaskList = () => {
-  //   const tempBadArg = badTasks.filter(
-  //     (item, i) => !indexToDeleteFromBadList.includes(i)
-  //   );
-  //   console.log(tempBadArg);
-  //   setBadTasks(tempBadArg);
-  //   setIndexToDeleteFromBadList([]);
-  // };
-  // const deleteFromTask = () => {
-  //   const tempArg = tasks.filter(
-  //     (item, i) => !indexToDeleteFromTask.includes(i)
-  //   );
-  //   console.log(tempArg);
-  //   setTasks(tempArg);
-  //   setIndexToDeleteFromTask([]);
-  // };
   const deleteOnClick = async () => {
     //call api from server
     const result = await deleteTasks(indexToDeleteFromTask);
     if (result?.status === "success") {
       fetchLatest();
     }
-    // deleteFromTask();
-    // deleteFromBadTaskList();
-    // deleteTask(
-    //   tasks,
-    //   setTasks,
-    //   indexToDeleteFromTask,
-    //   setIndexToDeleteFromTask
-    // );
-    // deleteTask(
-    //   badTasks,
-    //   setBadTasks,
-    //   indexToDeleteFromBadList,
-    //   setIndexToDeleteFromBadList
-    // );
   };
-  console.log(indexToDeleteFromTask);
   //task list only
   const taskListOnly = tasks.filter((item) => item.toDo);
 
@@ -165,7 +111,6 @@ const App = () => {
         <Row>
           <Col md="6">
             <TaskList
-              badTasks={badTasks}
               tasks={taskListOnly}
               markAsBadList={switchTask}
               handleOnTaskClick={handleOnTaskClick}
@@ -176,7 +121,6 @@ const App = () => {
             <BadTaskList
               badTasks={badListOnly}
               markToDo={switchTask}
-              badTaskHours={badTaskHours}
               handleOnTaskBadClick={handleOnTaskClick}
               indexToDeleteFromBadTask={indexToDeleteFromTask}
             />

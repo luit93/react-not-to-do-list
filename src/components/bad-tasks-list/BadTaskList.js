@@ -7,11 +7,10 @@ import { AlertDisplay } from "../alert/AlertDisplay";
 export const BadTaskList = ({
   badTasks,
   markToDo,
-  badTaskHours,
   handleOnTaskBadClick,
   indexToDeleteFromBadTask,
 }) => {
-  console.log(badTasks, " from badTaskLists");
+  const badHrs = badTasks.reduce((subTl, item) => subTl + item.hr, 0);
   return (
     <div>
       <h2>Bad Task List</h2>
@@ -50,7 +49,7 @@ export const BadTaskList = ({
       </Table>
       <AlertDisplay
         color="info"
-        text={`You could have saved ${badTaskHours} hrs/week`}
+        text={`You could have saved ${badHrs} hrs/week`}
       />
     </div>
   );
