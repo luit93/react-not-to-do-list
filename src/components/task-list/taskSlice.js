@@ -15,7 +15,7 @@ const taskSlice = createSlice({
     requestPending: (state) => {
       state.isLoading = true;
     },
-    addTaskSuccess: (state, { payload: { status, message } }) => {
+    updateTaskSuccess: (state, { payload: { status, message } }) => {
       //nested destructuring
       state.isLoading = false;
       state.status = status;
@@ -49,7 +49,7 @@ const taskSlice = createSlice({
 const { reducer, actions } = taskSlice;
 
 export const {
-  addTaskSuccess,
+  updateTaskSuccess,
   requestPending,
   fetchTaskListSuccess,
   requestFail,

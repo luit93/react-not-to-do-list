@@ -1,15 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { BadTaskList } from "../bad-tasks-list/BadTaskList";
+import { useDispatch, useSelector } from "react-redux";
+import { taskSwitcher } from "./taskAction";
 
-export const TaskList = ({
-  // tasks,
-  markAsBadList,
-  handleOnTaskClick,
-  indexToDeleteFromTask,
-}) => {
+export const TaskList = ({ handleOnTaskClick, indexToDeleteFromTask }) => {
   // console.log(tasks, " from taskLists");
   // const [exitData, setExitData] = useState([]);
 
@@ -19,6 +15,7 @@ export const TaskList = ({
   //   setExitData({ ...exitData, [name]: value });
   //   handleSubmit(exitData);
   // };
+  const dispatch = useDispatch();
   const { taskLists } = useSelector((state) => state.task);
   return (
     <div>
@@ -46,7 +43,9 @@ export const TaskList = ({
               <td>{item.hr}</td>
               <td>
                 <Button
-                  onClick={() => markAsBadList({ id: item._id, toDo: false })}
+                  onClick={() =>
+                    dispatch(taskSwitcher({ id: item._id, toDo: false }))
+                  }
                 >
                   Mark As Not To Do
                 </Button>

@@ -3,15 +3,15 @@ import { useState } from "react";
 import { TaskList } from "../task-list/TaskList";
 import { Table, Button, Alert } from "react-bootstrap";
 import { AlertDisplay } from "../alert/AlertDisplay";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { taskSwitcher } from "../task-list/taskAction";
 
 export const BadTaskList = ({
-  markToDo,
   handleOnTaskBadClick,
   indexToDeleteFromBadTask,
 }) => {
   const { badLists } = useSelector((state) => state.task);
-
+  const dispatch = useDispatch();
   const badHrs = badLists.reduce((subTl, item) => subTl + item.hr, 0);
   return (
     <div>
@@ -39,7 +39,9 @@ export const BadTaskList = ({
               <td>{item.hr}</td>
               <td>
                 <Button
-                  onClick={() => markToDo({ id: item._id, toDo: true })}
+                  onClick={() =>
+                    dispatch(taskSwitcher({ id: item._id, toDo: true }))
+                  }
                   type="submit"
                 >
                   Mark As To Do

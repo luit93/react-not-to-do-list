@@ -2,9 +2,9 @@ import {
   requestPending,
   requestFail,
   fetchTaskListSuccess,
-  addTaskSuccess,
+  updateTaskSuccess,
 } from "./taskSlice";
-import { fetchAllTasks, postTask } from "../../apis/taskApi";
+import { fetchAllTasks, postTask, updateTasks } from "../../apis/taskApi";
 //fetching all the tasks from server
 export const fetchTaskLists = () => async (dispatch) => {
   dispatch(requestPending());
@@ -15,7 +15,7 @@ export const fetchTaskLists = () => async (dispatch) => {
     : dispatch(requestFail(data));
 };
 
-//add new task in database
+//update new task in database
 
 export const addTask = (newTask) => async (dispatch) => {
   dispatch(requestPending());
@@ -23,7 +23,22 @@ export const addTask = (newTask) => async (dispatch) => {
   console.log(data);
 
   if (data.status === "success") {
-    dispatch(fetchTaskListSuccess(data));
+    dispatch(updateTaskSuccess(data));
+    dispatch(fetchTaskLists());
+  } else {
+    dispatch(requestFail(data));
+  }
+};
+
+//switch tasks between the lists
+
+export const taskSwitcher = (obj) => async (dispatch) => {
+  dispatch(requestPending());
+
+  const data = await updateTasks(obj);
+  console.log(data);
+  if (data.status === "success") {
+    dispatch(updateTaskSuccess(data));
     dispatch(fetchTaskLists());
   } else {
     dispatch(requestFail(data));
