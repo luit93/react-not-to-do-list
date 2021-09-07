@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { Col, Row, Button, Form } from "react-bootstrap";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTask } from "../task-list/taskAction";
+import { requestFail } from "../task-list/taskSlice";
 
 const initialFormData = {
   task: "Watching TV",
   hr: 10,
 };
+const totalHrsPerWeek = 168;
 export const AddTaskForm = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(initialFormData);
-
+  const { totalHrs } = useSelector((state) => state.task);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
 
@@ -23,6 +25,15 @@ export const AddTaskForm = () => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    if (totalHrs + +formData.hr > totalHrsPerWeek) {
+      dispatch(
+        requestFail({
+          status: "error",
+          message: "You don't have enough hours left",
+        })
+      );
+      return;
+    }
     dispatch(addTask(formData));
   };
   return (

@@ -5,12 +5,13 @@ import { Table, Button, Alert } from "react-bootstrap";
 import { AlertDisplay } from "../alert/AlertDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import { taskSwitcher } from "../task-list/taskAction";
+import { setIdToDelete } from "../task-list/taskSlice";
 
 export const BadTaskList = ({
   handleOnTaskBadClick,
   indexToDeleteFromBadTask,
 }) => {
-  const { badLists } = useSelector((state) => state.task);
+  const { badLists, taskToDelete } = useSelector((state) => state.task);
   const dispatch = useDispatch();
   const badHrs = badLists.reduce((subTl, item) => subTl + item.hr, 0);
   return (
@@ -31,8 +32,8 @@ export const BadTaskList = ({
                 <input
                   type="checkbox"
                   defaultValue={item._id}
-                  onChange={handleOnTaskBadClick}
-                  checked={indexToDeleteFromBadTask.includes(item._id)}
+                  onChange={(e) => dispatch(setIdToDelete(e.target))}
+                  checked={taskToDelete.includes(item._id)}
                 />{" "}
                 <label>{item.task}</label>
               </td>

@@ -6,20 +6,17 @@ import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
 import { Container, Col, Row, Button, Spinner } from "react-bootstrap";
 import { AddTaskForm } from "./components/add-task-form/AddTaskForm";
-import {
-  postTask,
-  fetchAllTasks,
-  deleteTasks,
-  updateTasks,
-} from "./apis/taskApi";
+import { deleteTasks } from "./apis/taskApi";
 import axios from "axios";
-import { fetchTaskLists } from "./components/task-list/taskAction";
+import {
+  fetchTaskLists,
+  handleOnDeleteItems,
+} from "./components/task-list/taskAction";
 const App = () => {
   const dispatch = useDispatch();
-  const { totalHrs, isLoading, status, message } = useSelector(
+  const { totalHrs, isLoading, status, message, taskToDelete } = useSelector(
     (state) => state.task
   );
-  const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
 
   const ttlPwk = 168;
 
@@ -29,22 +26,8 @@ const App = () => {
 
   //mark task list to bad list
 
-  const handleOnTaskClick = (e) => {
-    const { checked, value } = e.target;
-
-    if (checked) {
-      //add the index in the array
-      setIndexToDeleteFromTask([...indexToDeleteFromTask, value]);
-    } else {
-      //remove index from array
-      const tempArg = indexToDeleteFromTask.filter((item) => item !== value);
-      setIndexToDeleteFromTask(tempArg);
-    }
-  };
-
   const deleteOnClick = async () => {
     //call api from server
-    const result = await deleteTasks(indexToDeleteFromTask);
   };
 
   return (
@@ -70,22 +53,16 @@ const App = () => {
         <hr />
         <Row>
           <Col md="6">
-            <TaskList
-              handleOnTaskClick={handleOnTaskClick}
-              indexToDeleteFromTask={indexToDeleteFromTask}
-            />
+            <TaskList />
           </Col>
           <Col md="6">
-            <BadTaskList
-              handleOnTaskBadClick={handleOnTaskClick}
-              indexToDeleteFromBadTask={indexToDeleteFromTask}
-            />
+            <BadTaskList />
           </Col>
         </Row>
         <Row>
           <Col>
             <Button
-              onClick={deleteOnClick}
+              onClick={() => dispatch(handleOnDeleteItems(taskToDelete))}
               variant="danger"
               className="btn-block"
             >
