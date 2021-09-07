@@ -1,10 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { BadTaskList } from "../bad-tasks-list/BadTaskList";
 
 export const TaskList = ({
-  tasks,
+  // tasks,
   markAsBadList,
   handleOnTaskClick,
   indexToDeleteFromTask,
@@ -18,6 +19,7 @@ export const TaskList = ({
   //   setExitData({ ...exitData, [name]: value });
   //   handleSubmit(exitData);
   // };
+  const { taskLists } = useSelector((state) => state.task);
   return (
     <div>
       <h2>Task List</h2>
@@ -30,7 +32,7 @@ export const TaskList = ({
           </tr>
         </thead>
         <tbody>
-          {tasks.map((item, i) => (
+          {taskLists.map((item, i) => (
             <tr key={i}>
               <td>
                 <input

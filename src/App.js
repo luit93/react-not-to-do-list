@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { AlertDisplay } from "./components/alert/AlertDisplay";
 import { TaskList } from "./components/task-list/TaskList";
 import { BadTaskList } from "./components/bad-tasks-list/BadTaskList";
@@ -12,26 +13,21 @@ import {
   updateTasks,
 } from "./apis/taskApi";
 import axios from "axios";
-
+import { fetchTaskLists } from "./components/task-list/taskAction";
 const App = () => {
+  const dispatch = useDispatch();
+  const { totalHrs, isLoading } = useSelector((state) => state.task);
   const [tasks, setTasks] = useState([]);
   const [hrsError, setHrsError] = useState(false);
   const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
-  const [isLoading, setIsLoading] = useState([false]);
+  // const [isLoading, setIsLoading] = useState([false]);
 
-  const totalHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
+  // const totalHours = tasks?.reduce((subTotal, item) => subTotal + +item?.hr, 0);
 
   const ttlPwk = 168;
 
   useEffect(() => {
-    setIsLoading(true);
-    const loadTask = async () => {
-      const { result } = await fetchAllTasks();
-      setIsLoading(false);
-      result && setTasks(result);
-    };
-
-    loadTask();
+    dispatch(fetchTaskLists());
   }, []);
   // fetch t elatest data from server and set it in state
   const fetchLatest = async () => {
@@ -39,7 +35,7 @@ const App = () => {
     result && setTasks(result);
   };
   const handleOnSubmit = async (data) => {
-    if (totalHours + +data.hr > ttlPwk) {
+    if (totalHrs + +data.hr > ttlPwk) {
       setHrsError(true);
       return;
     }
@@ -82,11 +78,7 @@ const App = () => {
       fetchLatest();
     }
   };
-  //task list only
-  const taskListOnly = tasks.filter((item) => item.toDo);
 
-  //bad list only
-  const badListOnly = tasks.filter((item) => !item.toDo);
   return (
     <div>
       <Container fluid className="text-center">
@@ -111,7 +103,6 @@ const App = () => {
         <Row>
           <Col md="6">
             <TaskList
-              tasks={taskListOnly}
               markAsBadList={switchTask}
               handleOnTaskClick={handleOnTaskClick}
               indexToDeleteFromTask={indexToDeleteFromTask}
@@ -119,7 +110,6 @@ const App = () => {
           </Col>
           <Col md="6">
             <BadTaskList
-              badTasks={badListOnly}
               markToDo={switchTask}
               handleOnTaskBadClick={handleOnTaskClick}
               indexToDeleteFromBadTask={indexToDeleteFromTask}
@@ -141,7 +131,7 @@ const App = () => {
           <Col>
             <AlertDisplay
               color="info"
-              text={`Total hours allocated = ${totalHours} hours/week`}
+              text={`Total hours allocated = ${totalHrs} hours/week`}
             />
           </Col>
         </Row>

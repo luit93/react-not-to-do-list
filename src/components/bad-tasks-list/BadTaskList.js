@@ -3,14 +3,16 @@ import { useState } from "react";
 import { TaskList } from "../task-list/TaskList";
 import { Table, Button, Alert } from "react-bootstrap";
 import { AlertDisplay } from "../alert/AlertDisplay";
+import { useSelector } from "react-redux";
 
 export const BadTaskList = ({
-  badTasks,
   markToDo,
   handleOnTaskBadClick,
   indexToDeleteFromBadTask,
 }) => {
-  const badHrs = badTasks.reduce((subTl, item) => subTl + item.hr, 0);
+  const { badLists } = useSelector((state) => state.task);
+
+  const badHrs = badLists.reduce((subTl, item) => subTl + item.hr, 0);
   return (
     <div>
       <h2>Bad Task List</h2>
@@ -23,7 +25,7 @@ export const BadTaskList = ({
           </tr>
         </thead>
         <tbody>
-          {badTasks.map((item, i) => (
+          {badLists.map((item, i) => (
             <tr key={i}>
               <td>
                 <input
