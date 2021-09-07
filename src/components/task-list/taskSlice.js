@@ -15,14 +15,20 @@ const taskSlice = createSlice({
     requestPending: (state) => {
       state.isLoading = true;
     },
+    addTaskSuccess: (state, { payload: { status, message } }) => {
+      //nested destructuring
+      state.isLoading = false;
+      state.status = status;
+      state.message = message;
+    },
     fetchTaskListSuccess: (state, { payload }) => {
       const { status, message, result } = payload;
       state.totalHrs = result
         ? result.reduce((subttl, item) => subttl + +item.hr, 0)
         : 0;
       state.isLoading = false;
-      state.status = status;
-      state.message = message;
+      //   state.status = status;
+      //   state.message = message;
       if (result) {
         //task list only
         state.taskLists = result.filter((item) => item.toDo);
@@ -31,13 +37,21 @@ const taskSlice = createSlice({
         state.badLists = result.filter((item) => !item.toDo);
       }
     },
-    requestFail: (state, action) => {
+    requestFail: (state, { payload }) => {
+      const { status, message } = payload;
       state.isLoading = false;
+      state.status = status;
+      status.message = message;
     },
   },
 });
 
 const { reducer, actions } = taskSlice;
 
-export const { requestPending, fetchTaskListSuccess, requestFail } = actions;
+export const {
+  addTaskSuccess,
+  requestPending,
+  fetchTaskListSuccess,
+  requestFail,
+} = actions;
 export default reducer;

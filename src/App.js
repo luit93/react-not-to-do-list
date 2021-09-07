@@ -16,7 +16,9 @@ import axios from "axios";
 import { fetchTaskLists } from "./components/task-list/taskAction";
 const App = () => {
   const dispatch = useDispatch();
-  const { totalHrs, isLoading } = useSelector((state) => state.task);
+  const { totalHrs, isLoading, status, message } = useSelector(
+    (state) => state.task
+  );
   const [tasks, setTasks] = useState([]);
   const [hrsError, setHrsError] = useState(false);
   const [indexToDeleteFromTask, setIndexToDeleteFromTask] = useState([]);
@@ -90,10 +92,10 @@ const App = () => {
         </Row>
         <hr />
 
-        {hrsError && (
+        {message && (
           <AlertDisplay
-            color="danger"
-            text={"You don't have enough hours left this week"}
+            color={status === "success" ? "success" : "danger"}
+            text={message}
           />
         )}
 
