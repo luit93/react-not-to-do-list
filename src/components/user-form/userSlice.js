@@ -15,16 +15,22 @@ const userSlice = createSlice({
     requestPending: (state) => {
       state.isLoading = true;
     },
-
+    createUserSuccess: (state, { payload }) => {
+      const { status, message } = payload;
+      state.status = status;
+      state.message = message;
+      state.isLoading = false;
+    },
     requestFail: (state, { payload }) => {
       const { status, message } = payload;
       state.status = status;
       state.message = message;
+      state.isLoading = false;
     },
   },
 });
 
 const { reducer, actions } = userSlice;
 
-export const { requestPending, requestFail } = actions;
+export const { createUserSuccess, requestPending, requestFail } = actions;
 export default reducer;

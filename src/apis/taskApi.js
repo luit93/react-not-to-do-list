@@ -1,5 +1,5 @@
 import axios from "axios";
-const rootUrl = "http://localhost:8000/api/v1/";
+const rootUrl = "http://localhost:8000/api/v1/task";
 
 //adding datat to database
 export const postTask = async (newTask) => {
