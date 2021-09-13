@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
-import { createnewUser } from "./userAction";
+import { createnewUser, loginUser } from "./userAction";
 import { AlertDisplay } from "../alert/AlertDisplay";
 export const UserForm = () => {
   const userRefLogIn = useRef("");
@@ -16,6 +16,8 @@ export const UserForm = () => {
   }
   const handleOnLogin = () => {
     const userName = userRefLogIn.current.value;
+    console.log(userName);
+    dispatch(loginUser({ userName }));
   };
   const handleOnReg = () => {
     const userName = userRefReg.current.value;

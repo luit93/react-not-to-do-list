@@ -14,3 +14,17 @@ export const postUser = async (newUser) => {
     };
   }
 };
+
+// login user
+export const getUser = async (newUser) => {
+  try {
+    const { data } = await axios.post(rootUrl, newUser);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};

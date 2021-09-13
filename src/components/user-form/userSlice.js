@@ -21,6 +21,15 @@ const userSlice = createSlice({
       state.message = message;
       state.isLoading = false;
     },
+    loginUserSuccess: (state) => {
+      state.status = "";
+      state.message = "";
+      state.isLoading = false;
+      state.isLoggedIn = true;
+    },
+    userLogout: (state) => {
+      state.isLoggedIn = false;
+    },
     requestFail: (state, { payload }) => {
       const { status, message } = payload;
       state.status = status;
@@ -32,5 +41,11 @@ const userSlice = createSlice({
 
 const { reducer, actions } = userSlice;
 
-export const { createUserSuccess, requestPending, requestFail } = actions;
+export const {
+  createUserSuccess,
+  requestPending,
+  loginUserSuccess,
+  userLogout,
+  requestFail,
+} = actions;
 export default reducer;
